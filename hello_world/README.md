@@ -15,7 +15,7 @@ hello_world/
 
 This project is meant to:
 
-- Demonstrate how to write a minimal Assembly program that outputs “Hello, World!” to the console.
+- Demonstrate how to write a minimal Assembly program that outputs “Hello, world” to the console.
 - Show how to assemble and link the code into an executable for Linux using `nasm` and `ld`.
 - Serve as a starting point for learning low-level programming and Linux system calls.
 

@@ -15,17 +15,9 @@ hello_world/
 
 This project is meant to:
 
-- Demonstrate how to write a minimal Assembly program that outputs “Hello, World!” to standard output (console).
-- Show how to assemble and link the code into an executable.
+- Demonstrate how to write a minimal Assembly program that outputs “Hello, World!” to the console.
+- Show how to assemble and link the code into an executable for Linux using `nasm` and `ld`.
 - Serve as a starting point for learning low-level programming and Linux system calls.
-
-## Prerequisites
-
-Before running or building:
-
-- An assembler and linker (`nasm`, `ld`).
-- A Linux environment on x86 architecture.
-- Basic understanding of registers, memory, and system calls.
 
 ## How It Works
 
@@ -35,30 +27,39 @@ The program writes “Hello, World!” to standard output using Linux system cal
 
 ```asm
 section .data
-    msg db "Hello, World!", 10     ; string + newline
-    len equ $ - msg                ; compute length
+    msg DB "Hello, world",0xA, 0
+    size equ $ - msg
 
 section .text
     global _start
 
 _start:
-    mov eax, 4        ; sys_write
-    mov ebx, 1        ; file descriptor (stdout)
-    mov ecx, msg      ; pointer to message
-    mov edx, len      ; message length
-    int 0x80          ; call kernel
+    mov rax, 1 ; write syscall = 1
+    mov rdi, 1 ; stdout = 1
+    mov rsi, msg ; start of msg
+    mov rdx, size ; length of message
+    syscall ; switch to kernel mode
 
-    mov eax, 1        ; sys_exit
-    xor ebx, ebx      ; exit code 0
-    int 0x80
+_exitCall:
+    mov rax, 60 ; exit syscall = 60
+    xor rdi, rdi ; exit code = 0
+    syscall ; switch to kernel mode
 ```
 
 ### Explanation
 
-- `mov eax, 4` loads the syscall number for `write`.
-- `mov ebx, 1` sets file descriptor to stdout.
-- `mov ecx` and `mov edx` set up the message pointer and length.
-- `int 0x80` triggers the syscall interrupt.
+- Define the "Hello world!" message in `section .data`
+- Add a newline `0xA` and a null terminator `0` to the message.
+- Define the `size` of the message as a constant.
+- Set `global _start` to make the start procedure visible to the linker during the linking stage.
+- Define a procedure named `_start` to start the program.
+- `mov rax, 1`: load the system call for `write` to write to the console.
+- `mov rdi, 1`: set file descriptor to stdout.
+- `mov rsi` and `mov rdx` set up the message pointer and length.
+- `syscall` switches to kernel mode for the system call interrupt.
+- Define a procedure named `_exitCall` to exit the program.
+- `mov rax, 60`: load the system call for `exit` to exit the program.
+- `xor rdi, rdi`: set `rdi` to `0` for the exit code.
 - Then, `sys_exit` is invoked to terminate the program cleanly.
 
 This style directly interacts with the Linux kernel, showcasing pure system-level programming.

@@ -7,8 +7,8 @@ This folder contains a minimal “Hello, World!” program written in x86 Assemb
 ```
 hello_world/
 ├── hello.asm         ← the assembly source file
-├── hello.o           ← compiled object file
-└── hello              ← final executable (or intended output)
+├── hello.o           ← object file after assembling
+└── hello             ← final executable
 ```
 
 ## Purpose
@@ -21,7 +21,7 @@ This project is meant to:
 
 ## How It Works
 
-The program writes “Hello, World!” to standard output using Linux system calls directly, without the C standard library.
+The program writes “Hello, World!” to the console then exits using Linux system calls directly, without the C standard library.
 
 ### Code Breakdown
 
@@ -60,9 +60,13 @@ _exitCall:
 - Define a procedure named `_exitCall` to exit the program.
 - `mov rax, 60`: load the system call for `exit` to exit the program.
 - `xor rdi, rdi`: set `rdi` to `0` for the exit code.
-- Then, `sys_exit` is invoked to terminate the program cleanly.
+- Again `syscall` to switch to kernel mode and exit the program cleanly.
 
 This style directly interacts with the Linux kernel, showcasing pure system-level programming.
+
+> Note: `$ - msg` subtracts the memory address of the last character from the first character to get the length of the string.
+> Note: `xor rdi, rdi` is slightly more effecient than `mov rdi, 0`
+> Note: It is not neccessary to invoke the `exit` system call, but it is generally a good practice.
 
 ## Building and Running
 
@@ -83,8 +87,6 @@ Expected output:
 Hello, World!
 ```
 
-## Notes
-
-- The `equ $ - msg` line calculates the string length automatically.
-- This example uses 32-bit syscalls (`int 0x80`). On 64-bit systems, use `syscall` with 64-bit conventions.
-- Make sure to install 32-bit support libraries if running on a 64-bit OS.
+## Notes:
+- Target: Linux x86-64
+- Works on any modern Linux distro with NASM installed

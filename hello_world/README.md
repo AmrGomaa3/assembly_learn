@@ -64,9 +64,10 @@ _exitCall:
 
 This style directly interacts with the Linux kernel, showcasing pure system-level programming.
 
-> - `$ - msg` subtracts the memory address of the last character from the first character to get the length of the string including the newline and null terminator.
+> - `$ - msg` subtracts the memory address of the first character from the current assembly position to get the length of the string including the newline and null terminator.
 > - `xor rdi, rdi` is slightly more efficient than `mov rdi, 0`
 > - It is not necessary to invoke the `exit` system call, but it is generally a good practice.
+> - The null terminator is not necessary in this case but used as a convention.
 
 ## Building and Running
 

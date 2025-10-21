@@ -1,6 +1,6 @@
 # hello_world
 
-This folder contains a minimal “Hello, World!” program written in x86 Assembly for Linux.
+This folder contains a minimal “Hello, world” program written in x86 Assembly for Linux.
 
 ## Project Structure
 

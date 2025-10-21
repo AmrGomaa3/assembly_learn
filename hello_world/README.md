@@ -84,7 +84,7 @@ ld hello.o -o hello
 Expected output:
 
 ```
-Hello, World!
+Hello, world
 ```
 
 ## Notes:

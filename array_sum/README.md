@@ -105,7 +105,7 @@ This program performs the computation silently with no console output. To verify
 ```bash
 gdb ./sum
 (gdb) starti                 # start the program
-(gdb) si                     # advance the program by one instruction
+(gdb) si                     # advance the program by one instruction (repeat until loop completes)
 (gdb) info registers eax     # check the value of eax after every instruction to see the sum of the array gradually
 ```
 

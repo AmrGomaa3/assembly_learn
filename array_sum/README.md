@@ -82,9 +82,9 @@ At program termination:
 
 ### System Call Usage
 ```asm
-`mov rax, 60`    ; syscall number for `exit`.  
-`xor rdi, rdi`   ; exit code = 0.  
-`syscall`        ; switch to kernel mode.
+mov rax, 60    ; syscall number for `exit`.  
+xor rdi, rdi   ; exit code = 0.  
+syscall        ; switch to kernel mode.
 ```
 
 ## Building and Running

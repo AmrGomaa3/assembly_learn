@@ -53,7 +53,7 @@ _start:
 
 - `.data` defines an array of 16-bit (`word`) integers:
   ```asm
-  array dw 5 dup(2), 8, 5, 13
+  array DW 5 DUP(2), 8, 5, 13
   ```
   This expands to: `2, 2, 2, 2, 2, 8, 5, 13`
   
@@ -81,10 +81,11 @@ At program termination:
 - For the defined array, the sum is `2*5 + 8 + 5 + 13 = 36`.
 
 ### System Call Usage
-
-- `mov rax, 60` → syscall number for `exit`.  
-- `xor rdi, rdi` → exit code = 0.  
-- `syscall` switch to kernel mode.
+```asm
+`mov rax, 60`    ; syscall number for `exit`.  
+`xor rdi, rdi`   ; exit code = 0.  
+`syscall`        ; switch to kernel mode.
+```
 
 ## Building and Running
 
@@ -99,13 +100,13 @@ ld sum.o -o sum
 ./sum
 ```
 
-This program performs the computation with no output. To verify the result, inspect the `eax` register after execution using a debugger:
+This program performs the computation silently with no console output. To verify the result, inspect the `eax` register after execution using a debugger:
 
 ```bash
 gdb ./sum
-(gdb) starti
-(gdb) si
-(gdb) info registers eax
+(gdb) starti                      # start the program
+(gdb) si                          # advance the program by one instruction
+(gdb) info registers eax          # check the value of eax after every instruction to see the sum of the array gradually
 ```
 
 Expected result:

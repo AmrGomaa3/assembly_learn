@@ -11,8 +11,7 @@ It demonstrates:
 
 ## Code
 
-```asm
-section .data
+```asmsection .data
     string DB "Hello world"
     len equ $ - string
     newline DB 0xA
@@ -21,10 +20,10 @@ section .text
     global _start
 
 _start:
-    mov rcx, len            ; set up the counter
-    mov rsi, string         ; move starting address to rsi
+    mov rcx, len ; set up the counter
+    mov rsi, string ; move starting address to rsi
 
-    ; push each character to the stack
+    ; push to the stack
     pushing:
         movzx rax, byte [rsi]
         push rax
@@ -32,10 +31,10 @@ _start:
         dec rcx
         jnz pushing
 
-    mov rcx, len            ; reset the counter
-    mov rsi, string         ; point rsi back to the starting address
+    mov rcx, len ; reset the counter
+    mov rsi, string ; point rsi back to the starting address
 
-    ; pop from the stack (reversing the string)
+    ; pop from the stack
     popping:
         pop rax
         mov [rsi], al
@@ -43,14 +42,16 @@ _start:
         dec rcx
         jnz popping
 
-    ; write reversed string to console
+    ; write to console
     mov rsi, string
     mov rdx, len
+
     call _writeToConsole
 
     ; write newline to console
     mov rsi, newline
     mov rdx, 1
+
     call _writeToConsole
 
     ; exit program
@@ -59,9 +60,10 @@ _start:
     syscall
 
 _writeToConsole:
-    mov rax, 1              ; syscall: write
-    mov rdi, 1              ; stdout
+    mov rax, 1
+    mov rdi, 1
     syscall
+
     ret
 ```
 

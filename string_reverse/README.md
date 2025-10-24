@@ -1,7 +1,8 @@
-# Reverse String Using Stack (x86-64 Assembly)
+# string_reverse
 
 ## Overview
-This program reverses a string using the stack and outputs it to the console.  
+This program reverses a string using the stack and outputs it to the console.
+
 It demonstrates:
 - Manual stack manipulation (`push` and `pop`)
 - String length calculation using `EQU`

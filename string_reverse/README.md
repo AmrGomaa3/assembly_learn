@@ -15,14 +15,15 @@ reverse_string/
 
 This project demonstrates:
 
-- How to manipulate strings in Assembly.  
-- How to use the stack to reverse data.  
-- How to perform basic system calls (`write`, `exit`).  
+- How to manipulate strings in Assembly.
+- How to use the stack to reverse data.
+- How to perform loops using conditional jumps.
+- How to perform basic system calls (`write`, `exit`).
 - How to use memory addressing, loops, and stack operations.
 
 ## How It Works
 
-The program pushes each character of a string to the stack, pops them back in reverse order, and writes the result to the console, followed by a newline.
+The program pushes each character of a string to the stack, pops them back in reverse order, and writes the result to the console, followed by a newline for clean output.
 
 ## Code Breakdown
 
@@ -86,17 +87,19 @@ _writeToConsole:
 ## Explanation
 
 - `.data` defines the original string and its length:
+  
   ```asm
   string DB "Hello world"
   len equ $ - string
   ```
   - `string` contains the message.
-  - `len` calculates its length at assembly time.
+  - `len` calculates the length of the message by subtracting `string` (pointer to first character) from `$` (pointer to the current address), giving the total bytes.
   - `newline` adds a newline character (`0xA`) for clean console output.
 
 - `.text` holds the code section:
-  - `mov rcx, len` initializes the loop counter.
-  - `mov rsi, string` loads the starting address.
+- `global _start` makes the `_start` procedure visible for the linker.
+- `mov rcx, len` initializes the loop counter to the length of the string.
+- `mov rsi, string` loads the starting address of the string.
 
 ### Push Phase
 Each character is pushed onto the stack, one by one:
@@ -105,24 +108,39 @@ movzx rax, byte [rsi]
 push rax
 ```
 `movzx` ensures proper zero-extension from 8-bit to 64-bit before pushing.
+> Note: Each push operation pushes 4 bytes (64 bits) in the x86-64 architecture.
+
+- `inc rsi` moves `rsi` to the next character in the string.
+- `dec rcx` decrements loop counter. Once it reaches `0` it will trigger the 0 flag.
+- `jnz` performs a conditional jump back to the start of the `loop` label as long as the 0 flag has not been triggerred.
 
 ### Pop Phase
-After pushing all characters, the program pops them back to memory — reversing the string in-place.
+After pushing all characters, the program resets the loop counter, and points `rsi` back to the starting address of the string:
+```asm
+mov rcx, len ; reset the counter
+mov rsi, string ; point rsi back to the starting address
+```
+Then, the program pops characters back to memory, reversing the string in-place:
 
 ```asm
 pop rax
 mov [rsi], al
+inc rsi
+dec rcx
+jnz popping
 ```
 
 ### Writing to Console
+We load the starting address of the string in `rsi`, and the length of the string in `rdx`, before we call `_writeToConsole`.
 The `_writeToConsole` procedure uses the Linux `write` syscall:
+
 ```asm
 mov rax, 1     ; syscall: write
 mov rdi, 1     ; file descriptor: stdout
-mov rsi, string
-mov rdx, len
 syscall
 ```
+
+We then load the newline character in `rsi` and `1` in `rdx` before making another call to `_writeToConsole` to write the newline character.
 
 ### Exiting
 Finally, it uses the `exit` syscall (`rax=60`) with exit code 0.
@@ -149,4 +167,4 @@ dlrow olleH
 
 - Stack operations naturally reverse order, making it ideal for this task.
 - `movzx` is critical to correctly push bytes without garbage in upper bits.
-- The program modifies the string in-place — no extra buffers used.
+- The program modifies the string in-place with no extra buffers used.

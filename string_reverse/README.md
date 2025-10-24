@@ -1,18 +1,33 @@
-# string_reverse
+# reverse_string
 
-## Overview
-This program reverses a string using the stack and outputs it to the console.
+This folder contains a simple x86-64 Assembly program that reverses a string by pushing each character to the stack and then popping it back in reverse order.
 
-It demonstrates:
-- Manual stack manipulation (`push` and `pop`)
-- String length calculation using `EQU`
-- System calls for writing to stdout and exiting the program
+## Project Structure
 
----
+```
+reverse_string/
+├── reverse.asm      ← assembly source file
+├── reverse.o        ← object file
+└── reverse          ← final executable
+```
 
-## Code
+## Purpose
 
-```asmsection .data
+This project demonstrates:
+
+- How to manipulate strings in Assembly.  
+- How to use the stack to reverse data.  
+- How to perform basic system calls (`write`, `exit`).  
+- How to use memory addressing, loops, and stack operations.
+
+## How It Works
+
+The program pushes each character of a string to the stack, pops them back in reverse order, and writes the result to the console, followed by a newline.
+
+## Code Breakdown
+
+```asm
+section .data
     string DB "Hello world"
     len equ $ - string
     newline DB 0xA
@@ -21,8 +36,8 @@ section .text
     global _start
 
 _start:
-    mov rcx, len ; set up the counter
-    mov rsi, string ; move starting address to rsi
+    mov rcx, len
+    mov rsi, string
 
     ; push to the stack
     pushing:
@@ -32,8 +47,8 @@ _start:
         dec rcx
         jnz pushing
 
-    mov rcx, len ; reset the counter
-    mov rsi, string ; point rsi back to the starting address
+    mov rcx, len
+    mov rsi, string
 
     ; pop from the stack
     popping:
@@ -43,19 +58,17 @@ _start:
         dec rcx
         jnz popping
 
-    ; write to console
+    ; write reversed string
     mov rsi, string
     mov rdx, len
-
     call _writeToConsole
 
-    ; write newline to console
+    ; newline
     mov rsi, newline
     mov rdx, 1
-
     call _writeToConsole
 
-    ; exit program
+    ; exit
     mov rax, 60
     xor rdi, rdi
     syscall
@@ -64,52 +77,73 @@ _writeToConsole:
     mov rax, 1
     mov rdi, 1
     syscall
-
     ret
 ```
 
----
-
 ## Explanation
 
-| Section | Purpose |
-|----------|----------|
-| `.data` | Stores the string, its length, and a newline character. |
-| `.text` | Contains the program logic and system calls. |
-| `_start` | Entry point of the program. |
-| `_writeToConsole` | Subroutine for writing to standard output. |
+- `.data` defines the original string and its length:
+  ```asm
+  string DB "Hello world"
+  len equ $ - string
+  ```
+  - `string` contains the message.
+  - `len` calculates its length at assembly time.
+  - `newline` adds a newline character (`0xA`) for clean console output.
 
-### Key Instructions
-- `movzx rax, byte [rsi]`: Zero-extends a byte to 64 bits.
-- `push rax`: Pushes character onto stack.
-- `pop rax`: Pops character from stack (reversing order).
-- `syscall`: Executes system call (write or exit).
+- `.text` holds the code section:
+  - `mov rcx, len` initializes the loop counter.
+  - `mov rsi, string` loads the starting address.
 
-### Behavior
-1. Loads the string character-by-character onto the stack.
-2. Pops characters back into memory in reverse order.
-3. Prints the reversed string and a newline.
-4. Exits cleanly with syscall `60`.
+### Push Phase
+Each character is pushed onto the stack, one by one:
+```asm
+movzx rax, byte [rsi]
+push rax
+```
+`movzx` ensures proper zero-extension from 8-bit to 64-bit before pushing.
 
----
+### Pop Phase
+After pushing all characters, the program pops them back to memory — reversing the string in-place.
 
-## Sample Output
+```asm
+pop rax
+mov [rsi], al
+```
 
+### Writing to Console
+The `_writeToConsole` procedure uses the Linux `write` syscall:
+```asm
+mov rax, 1     ; syscall: write
+mov rdi, 1     ; file descriptor: stdout
+mov rsi, string
+mov rdx, len
+syscall
+```
+
+### Exiting
+Finally, it uses the `exit` syscall (`rax=60`) with exit code 0.
+
+## Building and Running
+
+```bash
+# assemble
+nasm -f elf64 reverse.asm -o reverse.o
+
+# link
+ld reverse.o -o reverse
+
+# run
+./reverse
+```
+
+Expected output:
 ```
 dlrow olleH
 ```
 
----
+## Notes
 
-## Run Instructions
-
-### Assemble and Link
-```bash
-nasm -f elf64 reverse_string.asm -o reverse_string.o
-ld reverse_string.o -o reverse_string
-```
-
-### Execute
-```bash
-./reverse_string
-```
+- Stack operations naturally reverse order, making it ideal for this task.
+- `movzx` is critical to correctly push bytes without garbage in upper bits.
+- The program modifies the string in-place — no extra buffers used.

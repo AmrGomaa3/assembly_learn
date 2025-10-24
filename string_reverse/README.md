@@ -108,11 +108,11 @@ movzx rax, byte [rsi]
 push rax
 ```
 `movzx` ensures proper zero-extension from 8-bit to 64-bit before pushing.
-> Note: Each push operation pushes 4 bytes (64 bits) in the x86-64 architecture.
+> Note: Each push operation pushes 8 bytes (64 bits) in the x86-64 architecture.
 
 - `inc rsi` moves `rsi` to the next character in the string.
-- `dec rcx` decrements loop counter. Once it reaches `0` it will trigger the 0 flag.
-- `jnz` performs a conditional jump back to the start of the `loop` label as long as the 0 flag has not been triggerred.
+- `dec rcx` decrements loop counter. Once it reaches `0` the zero flag (ZF) is set.
+- `jnz` performs a conditional jump back to the start of the `loop` label as long as ZF has not been set.
 
 ### Pop Phase
 After pushing all characters, the program resets the loop counter, and points `rsi` back to the starting address of the string:

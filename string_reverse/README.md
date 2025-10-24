@@ -112,13 +112,13 @@ push rax
 
 - `inc rsi` moves `rsi` to the next character in the string.
 - `dec rcx` decrements loop counter. Once it reaches `0` the zero flag (ZF) is set.
-- `jnz` performs a conditional jump back to the start of the `loop` label as long as ZF has not been set.
+- `jnz` performs a conditional jump back to the start of the `pushing` label as long as ZF has not been set.
 
 ### Pop Phase
 After pushing all characters, the program resets the loop counter, and points `rsi` back to the starting address of the string:
 ```asm
-mov rcx, len ; reset the counter
-mov rsi, string ; point rsi back to the starting address
+mov rcx, len       ; reset the counter
+mov rsi, string    ; point rsi back to the starting address
 ```
 Then, the program pops characters back to memory, reversing the string in-place:
 
@@ -129,6 +129,7 @@ inc rsi
 dec rcx
 jnz popping
 ```
+> Note: `mov [rsi], al` only stores the low byte of `rax` which contains the character.
 
 ### Writing to Console
 We load the starting address of the string in `rsi`, and the length of the string in `rdx`, before we call `_writeToConsole`.

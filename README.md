@@ -26,9 +26,9 @@ Each folder contains its own `.asm` source file, which you can build and run ind
 
 ```bash
 cd <example_folder>
-nasm -f elf64 example.asm -o example.o
-ld example.o -o example
-./example
+nasm -f elf64 <example>.asm -o <example>.o     # replace <example> with the filename
+ld <example>.o -o <example>
+./<example>
 ```
 
 For examples that do not print output (e.g., `sum_array`), inspect registers via a debugger such as `gdb` to view results.
@@ -36,7 +36,7 @@ For examples that do not print output (e.g., `sum_array`), inspect registers via
 ## Aims & Goals
 
 * Keep examples minimal, clear, and focused on one concept at a time.
-* Use raw Linux syscalls only — no C runtime.
+* Use raw Linux syscalls only (no C standard library).
 * Provide detailed comments explaining register use and logic.
 * Serve as compact teaching references for low-level programming.
 

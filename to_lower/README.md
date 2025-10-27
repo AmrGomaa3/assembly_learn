@@ -5,7 +5,7 @@ This folder contains a simple x86-64 Assembly program that reads user input, con
 ## Project Structure
 
 ```
-lowercase_converter/
+to_lower/
 ├── lowercase.asm     ← assembly source file
 ├── lowercase.o       ← object file
 └── lowercase         ← final executable

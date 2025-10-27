@@ -10,7 +10,7 @@ Each subfolder is a standalone example illustrating a concept or technique:
 * `hello_world` -> minimal “Hello, World!” via write syscall.
 * `sum_array` -> sum an array of 16-bit integers using `loop`.
 * `string_reverse` -> reverses a string using the stack and push/pop operations and conditional jumps.
-* `to_lower` -> read input using write syscall, convert uppercase to lowercase with bitwise manipulation, print output.
+* `to_lower` -> read input using read syscall, convert uppercase to lowercase with bitwise manipulation, print output.
 
 ## Getting Started
 

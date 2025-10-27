@@ -75,9 +75,9 @@ _writeToConsole:
 
 - `input RESB 128`: reserves 128-byte buffer for user input.
 - `len   RESB 1`: reserves 1-byte to store length of user input (can store integers up to 255, enough for the 128-byte buffer)
-- `global _start`: makes `start_` procedure visible to the linker.
+- `global _start`: makes `_start` procedure visible to the linker.
 - The read system call number is loaded in rax (`mov rax, 0`).
-- `buffer` is loaded in `rsi` and the max number of bytes (i.e. 128) is loaded into `rdx`.
+- `buffer` address is loaded in `rsi` and the max number of bytes (i.e. 128) is loaded into `rdx`.
 - the system call is invoked via `syscall`.
 - The read system call returns the number of read characters in `rax`.
 - The length of user input is stored in `len` via `mov [len], al`.
@@ -85,7 +85,7 @@ _writeToConsole:
 
 ### Conversion loop:
 - Length of user input is stored in `rcx` for the loop counter.
-- `dec rcx` to skip the newline character at the end.
+- `dec rcx` to skip the newline character included at the end of input.
 
   ```asm
   or byte [rsi], 00100000b

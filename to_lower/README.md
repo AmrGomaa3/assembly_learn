@@ -77,7 +77,7 @@ _writeToConsole:
 - `len   RESB 1`: reserves 1-byte to store length of user input (can store integers up to 255, enough for the 128-byte buffer)
 - `global _start`: makes `_start` procedure visible to the linker.
 - The read system call number is loaded in rax (`mov rax, 0`).
-- `buffer` address is loaded in `rsi` and the max number of bytes (i.e. 128) is loaded into `rdx`.
+- `input` address is loaded in `rsi` and the max number of bytes (i.e. 128) is loaded into `rdx`.
 - the system call is invoked via `syscall`.
 - The read system call returns the number of read characters in `rax`.
 - The length of user input is stored in `len` via `mov [len], al`.
@@ -111,13 +111,13 @@ _writeToConsole:
 
 ```bash
 # assemble
-nasm -f elf64 lowercase.asm -o lowercase.o
+nasm -f elf64 to_lower.asm -o to_lower.o
 
 # link
-ld lowercase.o -o lowercase
+ld to_lower.o -o to_lower
 
 # run
-./lowercase
+./to_lower
 ```
 
 Example run:

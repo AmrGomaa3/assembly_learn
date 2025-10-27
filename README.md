@@ -43,7 +43,9 @@ For examples that do not print output (e.g., `sum_array`), inspect registers via
 ## Author
 
 **Amr Gomaa**
+
 Self-taught systems/software developer with a background in engineering.
+
 GitHub: [AmrGomaa3](https://github.com/AmrGomaa3)
 
 ---

@@ -6,9 +6,9 @@ This folder contains a simple x86-64 Assembly program that reads user input, con
 
 ```
 to_lower/
-├── lowercase.asm     ← assembly source file
-├── lowercase.o       ← object file
-└── lowercase         ← final executable
+├── to_lower.asm     ← assembly source file
+├── to_lower.o       ← object file
+└── to_lower         ← final executable
 ```
 
 ## Purpose

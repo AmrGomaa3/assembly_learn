@@ -1,4 +1,4 @@
-# lowercase_converter
+# to_lower
 
 This folder contains a simple x86-64 Assembly program that reads user input, converts all uppercase letters to lowercase, and prints the result back to the console.
 
@@ -21,7 +21,7 @@ This project demonstrates:
 
 ## How It Works
 
-The program reads up to 128 bytes from standard input, converts all uppercase ASCII letters to lowercase by setting bit 5 (0x20), and writes the modified string back to standard output.
+The program reads up to 128 bytes from standard input, converts all uppercase ASCII letters to lowercase by setting bit 5 (0x20), and writes the modified string back to console.
 
 ## Code Breakdown
 
@@ -73,21 +73,24 @@ _writeToConsole:
 
 ## Explanation
 
-- **Input Handling:**
-  ```asm
-  mov rax, 0      ; syscall: read
-  mov rdi, 0      ; stdin
-  mov rsi, input  ; buffer
-  mov rdx, 128    ; max bytes
-  syscall
-  mov [len], al   ; AL contains number of bytes read (up to 128)
-  ```
+- `input RESB 128`: reserves 128-byte buffer for user input.
+- `len   RESB 1`: reserves 1-byte to store length of user input (can store integers up to 255, enough for the 128-byte buffer)
+- `global _start`: makes `start_` procedure visible to the linker.
+- The read system call number is loaded in rax (`mov rax, 0`).
+- `buffer` is loaded in `rsi` and the max number of bytes (i.e. 128) is loaded into `rdx`.
+- the system call is invoked via `syscall`.
+- The read system call returns the number of read characters in `rax`.
+- The length of user input is stored in `len` via `mov [len], al`.
+>Note: Since only 128 characters are allowed in the buffer, the value is in 1-byte and stored in `al`.
 
-- **Conversion Loop:**
+### Conversion loop:
+- Length of user input is stored in `rcx` for the loop counter.
+- `dec rcx` to skip the newline character at the end.
+
   ```asm
   or byte [rsi], 00100000b
   ```
-  This bitwise OR converts uppercase letters (A–Z) to lowercase (a–z) by setting bit 5 in ASCII.  
+  This bitwise `or` converts uppercase letters (A–Z) to lowercase (a–z) by setting bit 5 in ASCII.  
   Example: `'A' (0x41)` → `'a' (0x61)`.
 
 - **Output Handling:**
@@ -99,12 +102,10 @@ _writeToConsole:
   syscall
   ```
 
-- **Exit:**
-  ```asm
-  mov rax, 60     ; syscall: exit
-  xor rdi, rdi    ; exit code 0
-  syscall
-  ```
+### Exit:
+- Exit system call number `60` is stored in `rax`.
+- Exit code `0` loaded into `rdi`.
+- System call invoked via `syscall`.
 
 ## Building and Running
 
@@ -119,7 +120,7 @@ ld lowercase.o -o lowercase
 ./lowercase
 ```
 
-### Example Run
+Example run:
 
 ```
 HELLO WORLD
@@ -130,4 +131,3 @@ hello world
 
 - Bitwise conversion works safely for ASCII letters. Non-letter characters remain unchanged.
 - `or` with `00100000b` (0x20) only affects uppercase alphabetic characters.
-- `dec rcx` ensures the newline from input is not modified before writing back.
